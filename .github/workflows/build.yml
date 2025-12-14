@@ -1,0 +1,181 @@
+# LaTeX document build workflow
+
+name: build
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push events for all branches
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # automatically cancel the workflow if it runs longer than 3 minutes
+    timeout-minutes: 3
+    # The docker image to use for the container
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Set up Git repository
+        uses: actions/checkout@v6
+
+      # 2. Use font cache
+      - name: Cache fonts
+        id: cache-fonts
+        uses: actions/cache@v5
+        with:
+          path: |
+            /usr/share/fonts/truetype/fontawesome6
+            /usr/share/fonts/truetype/fontawesome7
+            /usr/share/fonts/truetype/roboto
+            /usr/share/fonts/truetype/xcharter
+            /usr/share/fonts/truetype/noto-emoji
+            /usr/share/fonts/truetype/gentium
+            /usr/share/fonts/truetype/noto-serief
+            /usr/share/fonts/truetype/arial
+          key: fonts-v3-${{ runner.os }}
+
+      # 2. install necessary fonts
+      - name: Install fonts
+        if: steps.cache-fonts.outputs.cache-hit != 'true'
+        run: |
+          wget https://mirrors.ctan.org/fonts/fontawesome6.zip
+          unzip fontawesome6.zip
+          mkdir -p /usr/share/fonts/truetype/fontawesome6
+          cp fontawesome6/opentype/* /usr/share/fonts/truetype/fontawesome6/
+          wget https://mirrors.ctan.org/fonts/fontawesome7.zip
+          unzip fontawesome7.zip
+          mkdir -p /usr/share/fonts/truetype/fontawesome7
+          cp fontawesome7/opentype/* /usr/share/fonts/truetype/fontawesome7/
+          wget https://mirrors.ctan.org/fonts/roboto.zip
+          unzip roboto.zip
+          mkdir -p /usr/share/fonts/truetype/roboto
+          cp roboto/opentype/* /usr/share/fonts/truetype/roboto/
+          rm /usr/share/fonts/truetype/roboto/*Condensed*
+          wget https://mirrors.ctan.org/fonts/xcharter.zip
+          unzip xcharter.zip
+          mkdir -p /usr/share/fonts/truetype/xcharter
+          cp xcharter/opentype/* /usr/share/fonts/truetype/xcharter
+          wget https://mirrors.ctan.org/fonts/noto-emoji.zip
+          unzip noto-emoji.zip
+          mkdir -p /usr/share/fonts/truetype/noto-emoji
+          cp noto-emoji/*.ttf /usr/share/fonts/truetype/noto-emoji
+          wget https://software.sil.org/downloads/r/gentium/Gentium-7.000.zip
+          unzip Gentium-7.000.zip
+          mkdir -p /usr/share/fonts/truetype/gentium
+          cp Gentium-7.000/*.ttf /usr/share/fonts/truetype/gentium
+          wget https://raw.githubusercontent.com/Linguistx/fonts/master/NotoSerif-unhinted.zip
+          unzip NotoSerif-unhinted.zip
+          mkdir -p /usr/share/fonts/truetype/noto-serief
+          cp NotoSerif-unhinted/*.ttf /usr/share/fonts/truetype/noto-serief
+          # Download and install Arial font
+          wget https://befonts.com/wp-content/uploads/2022/09/arial-font.zip -O arial.zip
+          mkdir -p /usr/share/fonts/truetype/arial
+          unzip arial.zip -d /usr/share/fonts/truetype/arial
+          fc-cache -fv
+
+      - name: Cache logo
+        id: cache-logo
+        uses: actions/cache@v5
+        with:
+          path: |
+            logos/tuda_logo.svg
+            logos/tuda_logo-dark.svg
+          key: tuda-logo-v2-svg
+
+      - name: Set up Docker Buildx
+        if: steps.cache-logo.outputs.cache-hit != 'true'
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Dockerfile.logo
+        if: steps.cache-logo.outputs.cache-hit != 'true'
+        run: docker buildx build --output logos -f .github/Dockerfile.logo .github
+
+      # 3. Set up Typst
+      - uses: typst-community/setup-typst@v4
+        with:
+          cache-dependency-path: common/requirements.typ
+
+      # 4. Build the document
+      - name: Typst
+        run: |
+          make
+          mv build/*.pdf .
+
+      # 5. Upload artifacts to GitHub
+      - name: Upload artifacts to GitHub
+        #if: ${{ !env.ACT }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: PDF
+          path: "*.pdf"
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+  # The following step deploys the PDF to Nextcloud via WebDAV. The new NextHessenbox should work perfectly fine with this. The idea is to generate one link, where your reviewers can always find the latest version of your thesis.
+  # deploy:
+  #   if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name == 'push' }}
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # 1. Download the artifact
+  #     - name: Save pdf file
+  #       uses: actions/download-artifact@v7
+  #       with:
+  #         name: PDF
+  #         path: .
+  #     # 2. Upload Sheet to Nextcloud via WebDAV
+  #     - name: Upload Sheet to Nextcloud via WebDAV
+  #       run: |
+  #         for file in *.pdf; do
+  #           echo "Uploading $file to Nextcloud"
+  #           curl -T $file -u ${{ secrets.NC_WEBDAV_USERNAME }}:${{ secrets.NC_WEBDAV_PW }} ${{ secrets.NC_WEBDAV_URL }}/$file
+  #         done
+  #         echo "Upload complete"
+  check-pdfa:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: build
+    # Steps represent a sequence of tasks that will be executed
+    steps:
+      # 1. Set up Git repository
+      - name: Set up Git repository
+        uses: actions/checkout@v6
+      # 2. Download the artifact
+      - name: Save pdf file
+        uses: actions/download-artifact@v7
+        with:
+          name: PDF
+      # 3. Install Java
+      - name: Install Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '21'
+      # 4. Install veraPDF
+      - name: Install veraPDF
+        run: |
+          wget https://software.verapdf.org/rel/verapdf-installer.zip
+          git clone https://aur.archlinux.org/verapdf.git aur-verapdf
+          cp aur-verapdf/auto-install.xml auto-install.xml
+          rm -rf aur-verapdf
+          unzip verapdf-installer.zip
+          cd verapdf-greenfield*/
+          ./verapdf-install ../auto-install.xml
+          cd ..
+          sudo ln -s /usr/share/verapdf/verapdf /usr/bin/verapdf
+          sudo ln -s /usr/share/verapdf/verapdf-gui /usr/bin/verapdf-gui
+      # 5. Check and create summary
+      - name: Process files and display report
+        run: .github/verapdf-to-markdown.sh >> $GITHUB_STEP_SUMMARY
