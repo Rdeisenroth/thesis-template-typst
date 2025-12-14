@@ -161,10 +161,19 @@ jobs:
       - name: Install Java
         uses: actions/setup-java@v5
         with:
-          distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '21'
-      # 4. Install veraPDF
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "21"
+      # 4. Use cache for veraPDF
+      - name: Cache veraPDF
+        id: cache-verapdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/share/verapdf
+          key: verapdf-v1.29.78-${{ runner.os }}
+      # 5. Install veraPDF
       - name: Install veraPDF
+        if: steps.cache-verapdf.outputs.cache-hit != 'true'
         run: |
           wget https://software.verapdf.org/rel/verapdf-installer.zip
           git clone https://aur.archlinux.org/verapdf.git aur-verapdf
@@ -174,8 +183,11 @@ jobs:
           cd verapdf-greenfield*/
           ./verapdf-install ../auto-install.xml
           cd ..
-          sudo ln -s /usr/share/verapdf/verapdf /usr/bin/verapdf
-          sudo ln -s /usr/share/verapdf/verapdf-gui /usr/bin/verapdf-gui
-      # 5. Check and create summary
+      # 6. Symlink veraPDF to /usr/bin
+      - name: Symlink veraPDF
+        run: |
+          sudo ln -sv /usr/share/verapdf/verapdf /usr/bin/verapdf
+          sudo ln -sv /usr/share/verapdf/verapdf-gui /usr/bin/verapdf-gui
+      # 7. Check and create summary
       - name: Process files and display report
         run: .github/verapdf-to-markdown.sh >> $GITHUB_STEP_SUMMARY
