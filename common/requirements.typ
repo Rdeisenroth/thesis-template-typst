@@ -11,6 +11,6 @@
 #import "@preview/cetz:0.4.2"
 #import "@preview/cetz-plot:0.1.3": chart, plot
 #import "@preview/cades:0.3.1": qr-code
-#import "@preview/glossarium:0.5.4": gls, glspl, make-glossary, print-glossary, register-glossary //make-glossary, print-glossary, gls, glspl 
+#import "@preview/glossarium:0.5.4": gls, glspl, make-glossary, print-glossary, register-glossary //make-glossary, print-glossary, gls, glspl
 #import "@preview/mitex:0.2.3": *
 #import "@preview/equate:0.1.0": equate

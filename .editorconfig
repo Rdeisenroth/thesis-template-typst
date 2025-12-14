@@ -18,7 +18,7 @@ trim_trailing_whitespace = false
 [flake.{lock,nix}]
 indent_size = 2
 
-[Makefile]
+[{Makefile,*.tmTheme}]
 indent_style = tab
 
 [{COPYING,LICENSE,NOTICE,*.{md,mf,xmp,typ}}]

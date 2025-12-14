@@ -38,5 +38,5 @@
 
 #let reviewer_names = (
   "B. Scheuert",
-  "M. Mustermann"
+  "M. Mustermann",
 )
