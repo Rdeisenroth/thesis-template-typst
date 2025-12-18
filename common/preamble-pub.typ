@@ -106,7 +106,8 @@
     //   right: 31.5mm,
     //   bottom: 56mm
     // ),
-
+    margin: tud_page_margin_small,
+    date_of_submission: submission_date,
 
     //outline_table_of_contents_style: "adapted",
     //reduce_heading_space_when_first_on_page: false

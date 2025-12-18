@@ -1,5 +1,5 @@
 #let title = [
-  Your Very Long Title Containing Many Buzzwords and Acronyms
+  Your Very Long Title Containing Many Buzzwords and Acronyms To Make You Sound Smart
 ]
 #let subtitle = [
   Some sensible subtitle
@@ -13,6 +13,11 @@
   Algorithmik
 ]
 
+#let submission_date = datetime(
+  year: 2042,
+  month: 10,
+  day: 4,
+)
 #let authors = (
   (
     // Should I use string or content? It doesn't matter
@@ -21,15 +26,6 @@
     email: "ruben.deisenroth@stud.tu-darmstadt.de",
     // mark: super(sym.suit.diamond),
     position: [Master Student],
-    department: [FB 20 -- Computer Science],
-    institute: [Technische Universität Darmstadt],
-    country: [Germany],
-  ),
-  (
-    name: "Andreas Brodner",
-    shortname: "A. Brodner",
-    email: "andreas.brodner@stud.tu-darmstadt.de",
-    position: [???],
     department: [FB 20 -- Computer Science],
     institute: [Technische Universität Darmstadt],
     country: [Germany],
