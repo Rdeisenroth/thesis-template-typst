@@ -11,10 +11,10 @@ RUN curl -O https://www.tu-darmstadt.de/media/medien_stabsstelle_km/services/med
     && sed -i 's/#000000/#1d1d1bff/g' p1_i.svg \
     && rsvg-convert -f svg -o tuda_logo.svg p1_i.svg --export-id=g23 \
     && rm das_bild_der_tu_darmstadt.pdf p1_i.svg \
-    # make transparent
-    && sed -i 's/rgb(100%, 100%, 100%)/none/g' tuda_logo.svg \
     # create dark mode version
     && cp tuda_logo.svg tuda_logo-dark.svg \
+    # make transparent
+    && sed -i 's/rgb(100%, 100%, 100%)/none/g' tuda_logo-dark.svg \
     # color everything white
     && sed -i -E 's/rgb\([^)]*\)/rgb(255, 255, 255)/g' tuda_logo-dark.svg
 
