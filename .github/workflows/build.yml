@@ -91,7 +91,7 @@ jobs:
           path: |
             logos/tuda_logo.svg
             logos/tuda_logo-dark.svg
-          key: tuda-logo-v2-svg
+          key: tuda-logo-v3-svg
 
       - name: Set up Docker Buildx
         if: steps.cache-logo.outputs.cache-hit != 'true'
