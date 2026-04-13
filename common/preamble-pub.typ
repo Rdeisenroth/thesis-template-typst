@@ -74,6 +74,7 @@
 
   show: tudapub.with(
     title: title,
+    title_height: 4.5em, // TODO: adjust title height. Default for shorter titles is 3.5em
     title_german: subtitle,
     author: authors.map(x => x.name).join(", "),
     // to deactivate the sub logo text set logo_sub_content_text: none,
