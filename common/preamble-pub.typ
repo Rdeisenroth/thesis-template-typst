@@ -3,7 +3,7 @@
 #import "commands.typ": *
 #import "styling.typ": *
 
-#let init(doc, darkmode: false) = {
+#let init(doc, darkmode: false, tudapub_options: (:)) = {
   if (sys.inputs.keys().any(k => k == "darkmode")) {
     let newDState = sys.inputs.at("darkmode") == "true"
     dState.update(newDState)
@@ -72,7 +72,7 @@
   show: make-glossary
   show: equate.with(sub-numbering: true, number-mode: "label")
 
-  show: tudapub.with(
+  let default_tudapub_options = (
     title: title,
     title_height: 4.5em, // TODO: adjust title height. Default for shorter titles is 3.5em
     title_german: subtitle,
@@ -83,10 +83,7 @@
 
     accentcolor: "9c",
 
-    abstract: [
-      This is a template to write your thesis with the corporate design of #link("https://www.tu-darmstadt.de/")[TU Darmstadt].
-      For instructions on how to set up this template see @sec_usage.
-    ],
+    abstract: none,
 
     bib: bibliography("refs.bib", full: true), //, style: "spie")
 
@@ -132,6 +129,11 @@
       - $t$ - time
       == List of Figures
     ],
+  )
+
+  show: tudapub.with(
+    ..default_tudapub_options,
+    ..tudapub_options,
   )
 
   let text_color = if darkmode {

@@ -1,6 +1,17 @@
 #import "common/preamble-pub.typ": *
 
-#show: doc => init(doc, darkmode: false) // you can also overwrite dark mode with input parameter
+#let thesis_abstract = [
+  This is a template to write your thesis with the corporate design of #link("https://www.tu-darmstadt.de/")[TU Darmstadt].
+  For instructions on how to set up this template see @sec_usage.
+]
+
+#show: doc => init(
+  doc,
+  darkmode: false,
+  tudapub_options: (
+    abstract: thesis_abstract,
+  ),
+) // you can also overwrite dark mode with input parameter
 
 // Rubos additional notes
 = Rubos additional notes
