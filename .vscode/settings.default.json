@@ -1,4 +1,5 @@
 {
+    "$schema": "vscode://schemas/settings/workspace",
     "files.insertFinalNewline": true,
     "tinymist.formatterMode": "typstyle",
     "tinymist.formatterIndentSize": 2,
