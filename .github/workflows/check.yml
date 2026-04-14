@@ -1,4 +1,4 @@
-name: check
+name: run style checks
 
 on:
   push:
@@ -18,5 +18,9 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: "3.14"
+    - name: Install typstyle # TODO: install via pre-commit hook once https://github.com/typstyle-rs/typstyle/issues/460 is resolved
+      uses: taiki-e/install-action@v2
+      with:
+        tool: typstyle
     - name: Execute Pre-commit Hooks
       uses: pre-commit/action@v3.0.1

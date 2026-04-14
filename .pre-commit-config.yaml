@@ -8,15 +8,14 @@ repos:
       - id: check-yaml
       - id: mixed-line-ending
         args: [--fix=lf]
-  - repo: local
+  - repo: local # currently using system installation, until https://github.com/typstyle-rs/typstyle/issues/460 is resolved
     hooks:
       - id: typstyle
         name: typstyle
-        description: Format files with typstyle
+        description: Format files with typstyle from system PATH
         entry: typstyle
-        language: rust
+        language: system
         types: [file]
-        additional_dependencies: ["cli:typstyle:0.14.0"]
         files: \.typ$
         args: [
           "-i",
