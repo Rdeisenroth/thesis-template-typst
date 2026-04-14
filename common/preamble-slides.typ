@@ -99,6 +99,7 @@
       is-section-slide: false,
     ),
   )
+  set text(font: "Roboto", fallback: true)
   set circle(stroke: text_color)
   set ellipse(stroke: text_color)
   set table(stroke: text_color)
