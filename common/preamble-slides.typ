@@ -2,6 +2,7 @@
 #import "metadata.typ": *
 #import "commands.typ": *
 #import "styling.typ": *
+#import "preamble-shared.typ": *
 
 #let handout = sys.inputs.keys().any(k => k == "handout") and sys.inputs.at("handout") == "true"
 #let init(doc, darkmode: false) = {
@@ -12,63 +13,15 @@
   } else {
     dState.update(darkmode)
   }
+
   set text(lang: "de")
-  codly(
-    // fill: luma(240),
-    fill: if darkmode { rgb("162b3a") } else { black.transparentize(90%) },
-    // stroke: 1pt + black,
-    stroke: none,
-    header: none,
-    header-cell-args: (align: center, fill: accent-color),
-    header-transform: x => {
-      set text(fill: white)
-      text(size: 11pt, fa-code(solid: true))
-      h(1fr)
-      textsf(x)
-      h(1fr)
-      text(size: 11pt, fill: accent-color, fa-code(solid: true))
-    },
-    // inset: (x: 3pt),
-    zebra-fill: none,
-    number-align: center,
-    // lang-fill: white,
-    languages: (
-      java: (
-        name: [ Java],
-        color: orange,
-        icon: fa-java(),
-      ),
-      typst: (
-        name: text(fill: white)[ Typst],
-        color: rgb("#191c1a"),
-        icon: box(baseline: .15em, radius: 3pt, clip: true, width: 1em, height: 1em, image(
-          "../pictures/typst-favicon.png",
-          width: 1em,
-          height: 1em,
-          fit: "contain",
-        )),
-      ),
-    ),
-    // lang-outset: (x: 0pt, y: 30pt),
-    // lang-outset: (x: -30pt, y: 0pt),
-    lang-format: (lang, icon, color) => {
-      box(
-        fill: color.transparentize(if darkmode { 50% } else { 80% }),
-        stroke: color + 0.5pt,
-        radius: 0.32em,
-        inset: 0.32em,
-        outset: (x: 0em, y: 0.32em),
-        {
-          icon
-          strong(lang)
-        },
-      )
-    },
-    number-format: i => grid.cell(
-      text(white, str(i)),
-      fill: rgb("#4C4C4C"), /*inset: (x: 4pt)*/
-    ),
-  )
+  setup-shared-styling(darkmode, accent-color)
+
+  let text_color = shared-text-color(darkmode)
+  let background_color = shared-background-color(darkmode)
+  set line(stroke: text_color)
+  set page(fill: background_color)
+  set text(fill: text_color)
 
   let header = self => pad(left: margin.left, right: margin.right, align(top)[
     #if self.store.enable-header {
@@ -106,6 +59,10 @@
     self.store.is-section-slide = false
   })
 
+  codly(..shared-codly-options(darkmode, accent-color))
+  set raw(theme: if darkmode { "halcyon.tmTheme" } else { auto })
+  show: codly-init.with()
+
   show: not-tudabeamer-2023-theme.with(
     config-info(
       title: {
@@ -142,46 +99,16 @@
       is-section-slide: false,
     ),
   )
+  set circle(stroke: text_color)
+  set ellipse(stroke: text_color)
+  set table(stroke: text_color)
 
-  let text_color = if darkmode {
-    white
-  } else {
-    black
-  }
+  style-figure-captions(accent-color)
 
-  let background_color = if darkmode {
-    // rgb(29, 31, 33)
-    rgb("293133")
-  } else {
-    white
-  }
-
+  let background_color = shared-background-color(darkmode)
   set line(stroke: text_color)
-  set raw(theme: if darkmode { "halcyon.tmTheme" } else { auto })
-
-  show: codly-init.with()
-
-  set list(
-    marker: level => context {
-      let fontsize = text.size
-      let size = calc.max(0.1pt, fontsize / 4 * calc.pow(0.8, level - 1))
-      v(size)
-      rect(width: size, height: size, stroke: none, fill: accent-color)
-    },
-    body-indent: 3mm,
-    indent: 3mm,
-  )
-
-  show figure.caption: it => context [
-    #text(accent-color)[#it.supplement~#it.counter.display()#it.separator]#it.body
-  ]
-
-  set enum(spacing: 1em, numbering: "1.", indent: 5pt)
-
-  set page(
-    fill: background_color,
-  )
-
+  set page(fill: background_color)
   set text(fill: text_color)
+
   doc
 }

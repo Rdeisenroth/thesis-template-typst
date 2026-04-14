@@ -91,7 +91,7 @@ public class HelloWorld {
   figure(
     scale(70%, reflow: true, cetz.canvas({
       cetz.draw.set-style(axes: (
-        stroke: if isDarkMode() { white } else { black },
+        stroke: fgcolor(),
         x: (label: (anchor: "south-east", offset: -0.4)),
         y: (label: (anchor: "north-west", offset: -0.4)),
       ))
@@ -110,7 +110,7 @@ public class HelloWorld {
         legend: (20, 10),
         legend-anchor: "north-east",
         legend-style: (
-          fill: if isDarkMode() { white.darken(80%) } else { black.lighten(80%) },
+          fill: if isDarkMode() { fgcolor().darken(80%) } else { fgcolor().lighten(80%) },
           stroke: none,
           radius: 3pt,
           padding: .3em,
@@ -175,13 +175,14 @@ public class HelloWorld {
 })
 
 == Fancy Tabellen
-#[
+#context [
   #show table.cell.where(y: 0): strong
   #show table: set text(top-edge: "cap-height")
+  #let table-stroke-color = fgcolor()
   #set table(
     stroke: (x, y) => (
-      bottom: 0.7pt + black,
-      top: (if y <= 1 { 0.7pt } else { 0pt }) + black,
+      bottom: 0.7pt + table-stroke-color,
+      top: (if y <= 1 { 0.7pt } else { 0pt }) + table-stroke-color,
     ),
     align: (x, y) => (
       if x > 0 { center } else { left }
@@ -282,29 +283,24 @@ Math: $x + y (a+b)/2$.
 
 
 $
-  "Align:"& \
-  & x+y^2 && != 27 sum_(n=0)^N e^(i dot pi dot n) \
-  & "s.t. " && b c
-  \
-  \
-  & mat(
-    1, 3;
-    3, 4
-  )^T
-  && =
-  alpha
-  mat(
-    x, y;
-    x_2, y_2
-  )^T
-  \
-  \
-  & underbrace(cal(B) >= B, "This is fancy!")
-  \
-  x &= y^2 + 12 & "(This does A)"
-  \
-  y &= z \/ 2 = z / 2 & "(This does B)" #<eq.last>
-$
+  "Align:" & \
+           & x+y^2                                     &                 & != 27 sum_(n=0)^N e^(i dot pi dot n) \
+           & "s.t. "                                   &                 & b c \
+           \
+           & mat(
+               1, 3;
+               3, 4
+             )^T                                       &                 & =
+                                                                           alpha
+                                                                           mat(
+                                                                             x, y;
+                                                                             x_2, y_2
+                                                                           )^T \
+           \
+           & underbrace(cal(B) >= B, "This is fancy!") \
+         x & = y^2 + 12                                & "(This does A)" \
+         y & = z \/ 2 = z / 2                          & "(This does B)"
+$ <eq.last>
 In @eq.last we can see cool stuff.
 
 Sub equations:
@@ -385,24 +381,28 @@ To reduce the spacing above and below block equations use:
 
 == Another Section
 Some graphics: \
-#box(stroke: black, inset: 5mm)[
-  test in a box
-  #circle(width: 2.2cm, inset: 2mm)[
-    And in the circle
+#context [
+  #box(stroke: fgcolor(), inset: 5mm)[
+    test in a box
+    #circle(width: 2.2cm, inset: 2mm)[
+      And in the circle
+    ]
   ]
 ]
 
 Some more text here. #lorem(20)
 In @fig.myfig we can see things.
 
-#figure(
-  [
-    #rect(inset: 20.9pt)[Dummy Test]
-  ],
-  caption: [
-    This is a figure
-  ],
-)<fig.myfig>
+#context [
+  #figure(
+    [
+      #rect(inset: 20.9pt, stroke: fgcolor())[Dummy Test]
+    ],
+    caption: [
+      This is a figure
+    ],
+  )<fig.myfig>
+]
 
 
 #lorem(100)
