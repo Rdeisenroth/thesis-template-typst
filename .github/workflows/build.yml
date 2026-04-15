@@ -113,14 +113,41 @@ jobs:
           make
           mv build/*.pdf .
 
-      # 5. Add build metadata to job summary
-      - name: Build PDF metadata report
+      # 5. Check whether pdfinfo is available
+      - name: Check pdfinfo
+        id: check-pdfinfo
         run: |
-          sudo apt-get update
-          sudo apt-get install -y poppler-utils
-          bash .github/pdf-metadata-to-markdown.sh . >> "$GITHUB_STEP_SUMMARY"
+          if command -v pdfinfo >/dev/null 2>&1; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      # 6. Upload artifacts to GitHub
+      # 6. Cache APT package data for poppler-utils
+      - name: Cache APT packages
+        if: steps.check-pdfinfo.outputs.available != 'true'
+        id: cache-apt
+        uses: actions/cache@v5
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt/lists
+          key: apt-poppler-utils-v1-${{ runner.os }}
+
+      # 7. Install poppler-utils only if missing
+      - name: Install poppler-utils
+        if: steps.check-pdfinfo.outputs.available != 'true'
+        run: |
+          sudo apt-get install -y --no-install-recommends poppler-utils || {
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends poppler-utils
+          }
+
+      # 8. Add build metadata to job summary
+      - name: Build PDF metadata report
+        run: bash .github/pdf-metadata-to-markdown.sh . >> "$GITHUB_STEP_SUMMARY"
+
+      # 9. Upload artifacts to GitHub
       - name: Upload artifacts to GitHub
         #if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v7
