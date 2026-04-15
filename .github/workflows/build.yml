@@ -113,7 +113,14 @@ jobs:
           make
           mv build/*.pdf .
 
-      # 5. Upload artifacts to GitHub
+      # 5. Add build metadata to job summary
+      - name: Build PDF metadata report
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          bash .github/pdf-metadata-to-markdown.sh . >> "$GITHUB_STEP_SUMMARY"
+
+      # 6. Upload artifacts to GitHub
       - name: Upload artifacts to GitHub
         #if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v7
@@ -190,4 +197,4 @@ jobs:
           sudo ln -sv /usr/share/verapdf/verapdf-gui /usr/bin/verapdf-gui
       # 7. Check and create summary
       - name: Process files and display report
-        run: .github/verapdf-to-markdown.sh >> $GITHUB_STEP_SUMMARY
+        run: bash .github/verapdf-to-markdown.sh . >> "$GITHUB_STEP_SUMMARY"
