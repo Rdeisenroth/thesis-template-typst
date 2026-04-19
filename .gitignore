@@ -393,3 +393,4 @@ svg-inkscape/
 logos/*
 !logos/convert_logo.sh
 !logos/invert_logo.sh
+!logos/download_logos.sh
