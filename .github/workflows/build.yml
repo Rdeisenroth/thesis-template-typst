@@ -115,7 +115,7 @@ jobs:
 
       # 5. Install and cache poppler-utils
       - name: Cache poppler-utils
-        uses: awalsh128/cache-apt-pkgs-action@v1.6.0
+        uses: awalsh128/cache-apt-pkgs-action@v1.6.3
         with:
           packages: poppler-utils
           version: 1.0
