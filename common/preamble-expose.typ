@@ -43,7 +43,7 @@
     ),
     task-prefix: none,
     task-separator: ("", ""),
-    headline: ("title"),
+    headline: "title",
     show-title: true,
     subtask: "ruled",
   )
