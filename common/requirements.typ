@@ -7,7 +7,7 @@
 #import "@preview/fontawesome:0.6.2": *
 #import "@preview/tyipa:0.1.1" as ipa
 #import "@preview/showybox:2.0.4": showybox
-#import "@preview/touying:0.7.4": *
+#import "@preview/touying:0.6.1": *
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 #import "@preview/cetz:0.5.2"
 #import "@preview/cetz-plot:0.1.4": chart, plot
