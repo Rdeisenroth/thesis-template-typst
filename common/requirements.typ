@@ -14,4 +14,4 @@
 #import "@preview/cades:0.3.1": qr-code
 #import "@preview/glossarium:0.5.10": gls, glspl, make-glossary, print-glossary, register-glossary //make-glossary, print-glossary, gls, glspl
 #import "@preview/mitex:0.2.7": *
-#import "@preview/equate:0.3.2": equate
+#import "@preview/equate:0.3.3": equate
