@@ -10,7 +10,7 @@
 #import "@preview/touying:0.6.1": *
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 #import "@preview/cetz:0.5.2"
-#import "@preview/cetz-plot:0.1.3": chart, plot
+#import "@preview/cetz-plot:0.1.4": chart, plot
 #import "@preview/cades:0.3.1": qr-code
 #import "@preview/glossarium:0.5.10": gls, glspl, make-glossary, print-glossary, register-glossary //make-glossary, print-glossary, gls, glspl
 #import "@preview/mitex:0.2.7": *
