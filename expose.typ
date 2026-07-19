@@ -159,4 +159,5 @@
 - TODO: Ensure the outlook is clearly lower detail than the milestone section.
 - TODO: Run one final pass for clarity, grammar, and consistent terminology.
 
-#bibliography("common/refs.bib")
+#tuda-section[Bibliography]
+#bibliography("common/refs.bib", title: none)
