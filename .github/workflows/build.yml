@@ -173,7 +173,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
-          java-version: "21"
+          java-version: "25"
       # 4. Use cache for veraPDF
       - name: Cache veraPDF
         id: cache-verapdf
