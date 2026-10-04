@@ -49,37 +49,39 @@ jobs:
       - name: Install fonts
         if: steps.cache-fonts.outputs.cache-hit != 'true'
         run: |
-          wget https://mirrors.ctan.org/fonts/fontawesome6.zip
+          # mirrors.ctan.org redirects to a random mirror, some of which have broken certificates -> retry
+          fetch() { for _ in 1 2 3 4 5; do wget -q "$@" && return 0; sleep 5; done; return 1; }
+          fetch https://mirrors.ctan.org/fonts/fontawesome6.zip
           unzip fontawesome6.zip
           mkdir -p /usr/share/fonts/truetype/fontawesome6
           cp fontawesome6/opentype/* /usr/share/fonts/truetype/fontawesome6/
-          wget https://mirrors.ctan.org/fonts/fontawesome7.zip
+          fetch https://mirrors.ctan.org/fonts/fontawesome7.zip
           unzip fontawesome7.zip
           mkdir -p /usr/share/fonts/truetype/fontawesome7
           cp fontawesome7/opentype/* /usr/share/fonts/truetype/fontawesome7/
-          wget https://mirrors.ctan.org/fonts/roboto.zip
+          fetch https://mirrors.ctan.org/fonts/roboto.zip
           unzip roboto.zip
           mkdir -p /usr/share/fonts/truetype/roboto
           cp roboto/opentype/* /usr/share/fonts/truetype/roboto/
           rm /usr/share/fonts/truetype/roboto/*Condensed*
-          wget https://mirrors.ctan.org/fonts/xcharter.zip
+          fetch https://mirrors.ctan.org/fonts/xcharter.zip
           unzip xcharter.zip
           mkdir -p /usr/share/fonts/truetype/xcharter
           cp xcharter/opentype/* /usr/share/fonts/truetype/xcharter
-          wget https://mirrors.ctan.org/fonts/noto-emoji.zip
+          fetch https://mirrors.ctan.org/fonts/noto-emoji.zip
           unzip noto-emoji.zip
           mkdir -p /usr/share/fonts/truetype/noto-emoji
           cp noto-emoji/*.ttf /usr/share/fonts/truetype/noto-emoji
-          wget https://software.sil.org/downloads/r/gentium/Gentium-7.000.zip
+          fetch https://software.sil.org/downloads/r/gentium/Gentium-7.000.zip
           unzip Gentium-7.000.zip
           mkdir -p /usr/share/fonts/truetype/gentium
           cp Gentium-7.000/*.ttf /usr/share/fonts/truetype/gentium
-          wget https://raw.githubusercontent.com/Linguistx/fonts/master/NotoSerif-unhinted.zip
+          fetch https://raw.githubusercontent.com/Linguistx/fonts/master/NotoSerif-unhinted.zip
           unzip NotoSerif-unhinted.zip
           mkdir -p /usr/share/fonts/truetype/noto-serief
           cp NotoSerif-unhinted/*.ttf /usr/share/fonts/truetype/noto-serief
           # Download and install Arial font
-          wget https://befonts.com/wp-content/uploads/2022/09/arial-font.zip -O arial.zip
+          fetch https://befonts.com/wp-content/uploads/2022/09/arial-font.zip -O arial.zip
           mkdir -p /usr/share/fonts/truetype/arial
           unzip arial.zip -d /usr/share/fonts/truetype/arial
           fc-cache -fv
